@@ -5,12 +5,31 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    },
+    transports: ['websocket', 'polling'] // Permitir ambos pero priorizar websocket
+});
 
 const PORT = process.env.PORT || 3000;
 
+// Middleware para forzar HTTPS
+app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] === 'http') {
+        return res.redirect(`https://${req.headers.host}${req.url}`);
+    }
+    next();
+});
+
 // Servir archivos estáticos
 app.use(express.static(__dirname));
+
+// Ruta principal explícita
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Estado global del servidor
 let lobbyPlayers = []; // { id, name, isAdmin }

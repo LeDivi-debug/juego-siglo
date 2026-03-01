@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Socket Initialization
-    const socket = io();
+    const socket = io({
+        transports: ['websocket']
+    });
 
     // Pantallas
     const menuScreen = document.getElementById('menu-screen');
