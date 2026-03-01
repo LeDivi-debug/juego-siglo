@@ -1,0 +1,21 @@
+Materiales:
+Fichas redondas de madera enumeradas del 1 al 90 sin repetición.
+bolsa donde meter las fichas
+
+Objetivo:
+Los jugadores tendran que sumar sus fichas para obtener 99 o 100.
+Aquel jugador en ganar 7 rondas gana la partida.
+
+Flujo de juego:
+
+Vira: Es una ficha que se saca de la bolsa al iniciar una partida y es visible para todos los jugadores.
+
+El jugador en su turno podra hacer 4 acciones:
+1. Pedir una ficha al azar de la bolsa de fichas disponibles. Esto puede hacerlo 13 veces como maximo.
+2. Declarar "Siglo". Si el jugador declara siglo y tiene una suma de 99 o 100, gana la ronda inmediatamente. Si el jugador declara siglo y no tiene 99 o 100, queda eliminado de la ronda.
+3. Irse de la ronda. En este caso, el jugador se retira de la ronda ya sea porque la suma de sus fichas es mayor a 100 o porque considera que no puede seguir y queda eliminado de la ronda. El jugador solo podrá retirarse si tiene 2 fichas o más.
+4. Quedarse. Un jugador puede quedarse si su suma está entre 90 y 98, sin embargo, que su suma esté entre 90 y 98 no es obligatorio para quedarse, por lo que un jugador puede quedarse con una suma menor a 90 siempre y cuando tenga por lo menos una ficha. Si mas de un jugador se queda al finalizar los turnos, ganará aquel con la suma mas cercana a 100. Si se queda mas de un jugador al final de los turnos y tiene la misma suma, ganará el jugador con el menor turno.
+
+Si un jugador es eliminado en su turno, todas y cada una de sus fichas son devueltas al saco inmediatamente.
+El jugador solo tendrá un solo turno por ronda, lo que quiere decir que en su unico turno se decidira en que estado quedará el jugador: se queda, se retira y queda eliminado de la ronda, o declara siglo y gana la ronda. Nota que la accion pedir fichas es la unica que puede hacerse mas de una vez en el turno del jugador, las demas evaluan y son de un solo uso.
+El jugador podrá añadir la vira o no a su suma de fichas y no puede sumar solo algunas fichas. Por lo que el jugador tiene dos opciones de suma: todas sus fichas o todas sus fichas + Vira

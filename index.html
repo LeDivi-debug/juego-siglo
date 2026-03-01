@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siglo</title>
+    <meta name="description" content="Juego de mesa Siglo">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="menu-container" id="menu-screen">
+        <h1 class="game-title" id="game-title">SIGLO</h1>
+        <div class="button-group">
+            <button id="btn-play" class="btn primary">Jugar</button>
+            <button id="btn-show-rules-main" class="btn secondary">¿Cómo se juega?</button>
+            <button id="btn-exit" class="btn secondary">Salir</button>
+        </div>
+    </div>
+
+    <div class="setup-container" id="setup-screen" style="display: none;">
+        <h2 id="setup-title">Sala de Espera</h2>
+
+        <!-- Formulario de unión -->
+        <div id="join-form" class="join-form">
+            <input type="text" id="player-nickname" placeholder="Introduce tu Nickname" maxlength="10">
+            <button id="btn-join" class="btn primary">Unirse a la Sala</button>
+        </div>
+
+        <div id="players-grid" class="players-grid">
+            <!-- Los jugadores que se unan aparecerán aquí -->
+        </div>
+
+        <div id="admin-controls" class="admin-controls" style="display: none; width: 100%;">
+            <p class="admin-msg">Eres el administrador. Espera a los jugadores para comenzar.</p>
+        </div>
+
+        <div class="button-group horizontal">
+            <button id="btn-back" class="btn secondary">Regresar</button>
+            <button id="btn-start" class="btn primary" style="display: none;">Empezar Partida</button>
+        </div>
+    </div>
+
+    <!-- Pantalla de Juego -->
+    <div class="game-container" id="game-screen" style="display: none;">
+        <div class="table-area">
+            <div id="round-table" class="round-table">
+                <!-- Líneas divisorias se generarán vía JS o CSS -->
+
+                <!-- Vira en el centro -->
+                <div class="vira-spot" id="vira-spot">
+                    <span class="vira-label">Vira</span>
+                    <div class="vira-chip empty" id="current-vira"></div>
+                </div>
+            </div>
+
+            <!-- Posiciones de los jugadores generadas dinámicamente aquí -->
+            <div id="players-table-container" class="players-table-container"></div>
+        </div>
+
+        <!-- Sistema de Logs Inteligente -->
+        <div class="game-log-container">
+            <div class="log-header">Registro de Partida</div>
+            <div id="game-log" class="game-log">
+                <!-- Logs se inyectarán aquí -->
+            </div>
+        </div>
+
+        <!-- Botones de Sistema (Pausa e Historial) -->
+        <div class="system-controls">
+            <button id="btn-pause" class="system-trigger" title="Pausa">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                </svg>
+            </button>
+            <button id="btn-sound-toggle" class="system-trigger" title="Sonido">
+                <svg id="sound-icon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <!-- Icono de sonido activo por defecto -->
+                    <path
+                        d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                </svg>
+            </button>
+            <button id="btn-history" class="system-trigger" title="Historial">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <path
+                        d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+                </svg>
+            </button>
+            <button id="btn-back-to-victory" class="system-trigger" title="Ver Victoria" style="display: none;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="#fbbf24">
+                    <path
+                        d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-3.96C19.08 11.63 21 9.55 21 7V5c0-1.1-.9-2-2-2zm-12 5c-1.1 0-2-.9-2-2V7h2v3zm10 0V7h2v1c0 1.1-.9 2-2 2z" />
+                </svg>
+        </div>
+
+        <!-- Sistema de Emotes Rápidos -->
+        <div class="emotes-wrapper">
+            <button id="btn-emote-toggle" class="system-trigger secondary" title="Enviar Emote">💬</button>
+            <div id="emotes-panel" class="emotes-panel">
+                <button class="emote-btn" data-emoji="😂">😂</button>
+                <button class="emote-btn" data-emoji="😢">😢</button>
+                <button class="emote-btn" data-emoji="🔥">🔥</button>
+                <button class="emote-btn" data-emoji="🤔">🤔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Inventario de Jugador -->
+    <div class="modal-overlay" id="inventory-modal" style="display: none;">
+        <div class="inventory-content">
+            <div class="inventory-header">
+                <h2 id="modal-player-name">Jugador</h2>
+                <button class="close-modal" id="btn-close-inventory">×</button>
+            </div>
+
+            <div class="inventory-body">
+                <div class="chips-section">
+                    <h3>Tus Fichas</h3>
+                    <div class="chips-container" id="player-chips-container">
+                        <!-- Fichas se inyectarán aquí -->
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-label">Suma Actual</span>
+                            <span class="stat-value" id="current-sum">0</span>
+                        </div>
+                        <div class="stat-card highlight">
+                            <span class="stat-label">Con Vira</span>
+                            <span class="stat-value" id="sum-with-vira">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Rondas</span>
+                            <span class="stat-value" id="rounds-won">0</span>
+                        </div>
+                    </div>
+
+                    <div class="action-feedback" id="action-message">
+                        Selecciona una acción para tu turno.
+                    </div>
+                </div>
+            </div>
+
+            <div class="inventory-actions" id="inventory-actions-bar">
+                <button id="btn-draw" class="btn primary">Pedir Ficha</button>
+                <button id="btn-siglo" class="btn primary">¡SIGLO!</button>
+                <button id="btn-stay" class="btn secondary">Quedarse</button>
+                <button id="btn-fold" class="btn secondary">Retirarse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Resultados de Ronda -->
+    <div id="results-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content results-content">
+            <div class="modal-header">
+                <h2>Resultados de la Ronda</h2>
+            </div>
+            <div id="results-body" class="results-body">
+                <!-- Tarjetas de resultados inyectadas vía JS -->
+            </div>
+            <div class="modal-footer">
+                <button id="btn-next-round" class="btn primary">Siguiente Ronda</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Pausa -->
+    <div id="pause-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content pause-content">
+            <div class="modal-header">
+                <h2>Pausa</h2>
+            </div>
+            <div class="pause-body">
+                <button id="btn-resume" class="btn primary full-width">Continuar</button>
+                <button id="btn-show-rules-pause" class="btn secondary full-width">Ayuda / Reglas</button>
+                <button id="btn-restart-round" class="btn secondary full-width">Reiniciar Ronda</button>
+                <button id="btn-restart-game" class="btn secondary full-width">Reiniciar Partida</button>
+                <button id="btn-main-menu" class="btn danger full-width">Menú Principal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Historial de Partida -->
+    <div id="history-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content history-content">
+            <div class="modal-header">
+                <h2>Historial de Partida</h2>
+                <button class="close-modal" id="btn-close-history">×</button>
+            </div>
+            <div class="history-body">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Ronda</th>
+                            <th>Ganador</th>
+                            <th>Método</th>
+                            <th>Suma</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- Entradas inyectadas vía JS -->
+                    </tbody>
+                </table>
+                <div id="empty-history-msg" class="empty-msg">No hay rondas registradas aún.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de Confeti -->
+    <div id="confetti-container" class="confetti-container"></div>
+
+    <!-- Modal de Victoria Final -->
+    <div id="victory-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content victory-content">
+            <div class="victory-icon">🏆</div>
+            <div class="modal-header">
+                <h1>¡TENEMOS UN CAMPEÓN!</h1>
+            </div>
+            <div class="victory-body">
+                <p>Felicidades, <span id="winner-name-display" class="winner-name">Jugador</span></p>
+                <p class="victory-message">Has alcanzado las 7 rondas ganadas y te coronas como el maestro del Siglo.
+                </p>
+
+                <div class="victory-stats">
+                    <!-- Se pueden añadir más stats aquí si se desea -->
+                </div>
+            </div>
+            <div class="modal-footer victory-footer">
+                <button id="btn-victory-new-game" class="btn primary">Nueva Partida</button>
+                <button id="btn-victory-menu" class="btn secondary">Menú Principal</button>
+                <button id="btn-victory-close" class="btn danger">Cerrar y Ver Mesa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Reglas del Juego -->
+    <div id="rules-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content rules-content">
+            <div class="modal-header">
+                <h2>Guía de Juego (Siglo)</h2>
+                <button class="close-modal" id="btn-close-rules">×</button>
+            </div>
+            <div class="rules-body">
+                <section class="rules-section">
+                    <h3>🎯 El Objetivo</h3>
+                    <p>El objetivo es acumular fichas cuyo valor sumado sea exactamente <strong>99 o 100</strong>.</p>
+                </section>
+
+                <section class="rules-section">
+                    <h3>🪵 La Vira</h3>
+                    <p>En el centro de la mesa hay una ficha llamada <strong>Vira</strong>. Su valor se suma
+                        automáticamente a la puntuación de todas tus fichas al declarar Siglo o Plantarse.</p>
+                </section>
+
+                <section class="rules-section">
+                    <h3>🎮 Acciones de Turno</h3>
+                    <ul>
+                        <li><strong>Pedir Ficha:</strong> Tomas una ficha al azar de la bolsa (valores 1-90).</li>
+                        <li><strong>Quedarse:</strong> Si tu suma (con la Vira) está entre <strong>90 y 98</strong>,
+                            puedes plantarte.</li>
+                        <li><strong>¡SIGLO!:</strong> Si tu suma (con la Vira) es exactamente <strong>99 o 100</strong>,
+                            ¡puedes cantar Siglo y ganar la ronda!</li>
+                        <li><strong>Retirarse:</strong> Si crees que te vas a pasar de 100, puedes abandonar la ronda
+                            para no perder tantos puntos.</li>
+                    </ul>
+                </section>
+
+                <section class="rules-section highlight">
+                    <h3>⚠️ Reglas Cruciales</h3>
+                    <p>Si obtienes un Siglo (99/100) y pides otra ficha por error, quedas <strong>eliminado</strong>
+                        automáticamente de la ronda.</p>
+                </section>
+
+                <section class="rules-section">
+                    <h3>🏆 Ganar la Partida</h3>
+                    <p>Cada vez que ganas una ronda, obtienes un punto de victoria. El primer jugador en alcanzar
+                        <strong>7 puntos</strong> gana la partida definitiva.</p>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación de Turno -->
+    <div id="turn-notification" class="turn-notification">
+        <div class="turn-notification-content">
+            <span class="turn-icon">🔔</span>
+            <span class="turn-text">¡Es tu turno!</span>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
